@@ -76,7 +76,7 @@ public class MiuiUtils {
     /**
      * 小米 ROM 权限申请
      */
-    public static void applyMiuiPermission(Context context) {
+    public static void applyPermission(Context context) {
         int versionCode = getMiuiVersion();
         if (versionCode == 5) {
             goToMiuiPermissionActivity_V5(context);
@@ -182,7 +182,7 @@ public class MiuiUtils {
             intent.setPackage("com.miui.securitycenter");
             intent.putExtra("extra_pkgname", context.getPackageName());
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            
+
             if (isIntentAvailable(intent, context)) {
                 context.startActivity(intent);
             } else {

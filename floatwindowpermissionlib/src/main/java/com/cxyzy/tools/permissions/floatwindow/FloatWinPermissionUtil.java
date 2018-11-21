@@ -152,7 +152,7 @@ public class FloatWinPermissionUtil {
             @Override
             public void confirmResult(boolean confirm) {
                 if (confirm) {
-                    MiuiUtils.applyMiuiPermission(context);
+                    MiuiUtils.applyPermission(context);
                 } else {
                     Log.e(TAG, "ROM:miui, user manually refuse OVERLAY_PERMISSION");
                 }
@@ -165,7 +165,7 @@ public class FloatWinPermissionUtil {
             @Override
             public void confirmResult(boolean confirm) {
                 if (confirm) {
-                    OppoUtils.applyOppoPermission(context);
+                    OppoUtils.applyPermission(context);
                 } else {
                     Log.e(TAG, "ROM:miui, user manually refuse OVERLAY_PERMISSION");
                 }

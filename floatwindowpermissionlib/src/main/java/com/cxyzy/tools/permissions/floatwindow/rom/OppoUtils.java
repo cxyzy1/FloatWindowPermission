@@ -53,7 +53,7 @@ public class OppoUtils {
     /**
      * oppo ROM 权限申请
      */
-    public static void applyOppoPermission(Context context) {
+    public static void applyPermission(Context context) {
         //merge request from https://github.com/zhaozepeng/FloatWindowPermission/pull/26
         try {
             Intent intent = new Intent();
@@ -62,8 +62,7 @@ public class OppoUtils {
             ComponentName comp = new ComponentName("com.coloros.safecenter", "com.coloros.safecenter.sysfloatwindow.FloatWindowListActivity");//悬浮窗管理页面
             intent.setComponent(comp);
             context.startActivity(intent);
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
