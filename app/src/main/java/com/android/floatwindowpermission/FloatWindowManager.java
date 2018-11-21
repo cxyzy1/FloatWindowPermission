@@ -5,8 +5,6 @@ package com.android.floatwindowpermission;
 
 import android.content.Context;
 
-import com.cxyzy.tools.permissions.floatwindow.BaseFloatWindowManager;
-
 /**
  * Description:
  *
