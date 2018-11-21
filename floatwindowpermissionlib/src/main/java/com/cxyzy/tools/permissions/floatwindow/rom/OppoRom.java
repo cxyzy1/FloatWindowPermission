@@ -17,14 +17,21 @@ import java.lang.reflect.Method;
  * @author Shawn_Dut
  * @since 2018-02-01
  */
-public class OppoUtils {
+public class OppoRom implements RomInterface {
 
-    private static final String TAG = "OppoUtils";
+    private static final String TAG = "OppoRom";
+
+    @Override
+    public boolean checkRom() {
+        //https://github.com/zhaozepeng/FloatWindowPermission/pull/26
+        return Build.MANUFACTURER.contains("OPPO") || Build.MANUFACTURER.contains("oppo");
+    }
 
     /**
-     * 检测 360 悬浮窗权限
+     * 检测 oppo 悬浮窗权限
      */
-    public static boolean checkFloatWindowPermission(Context context) {
+    @Override
+    public boolean checkFloatWindowPermission(Context context) {
         final int version = Build.VERSION.SDK_INT;
         if (version >= 19) {
             return checkOp(context, 24); //OP_SYSTEM_ALERT_WINDOW = 24;
@@ -53,7 +60,8 @@ public class OppoUtils {
     /**
      * oppo ROM 权限申请
      */
-    public static void applyPermission(Context context) {
+    @Override
+    public void applyPermission(Context context) {
         //merge request from https://github.com/zhaozepeng/FloatWindowPermission/pull/26
         try {
             Intent intent = new Intent();

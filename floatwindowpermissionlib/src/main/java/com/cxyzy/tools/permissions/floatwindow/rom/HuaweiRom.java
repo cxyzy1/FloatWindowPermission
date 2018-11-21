@@ -16,13 +16,21 @@ import android.widget.Toast;
 
 import java.lang.reflect.Method;
 
-public class HuaweiUtils {
-    private static final String TAG = "HuaweiUtils";
+import static com.cxyzy.tools.permissions.floatwindow.rom.CommonRom.getSystemProperty;
+
+public class HuaweiRom implements RomInterface {
+    private static final String TAG = "HuaweiRom";
+
+    @Override
+    public boolean checkRom() {
+        return Build.MANUFACTURER.contains("HUAWEI");
+    }
 
     /**
      * 检测 Huawei 悬浮窗权限
      */
-    public static boolean checkFloatWindowPermission(Context context) {
+    @Override
+    public boolean checkFloatWindowPermission(Context context) {
         final int version = Build.VERSION.SDK_INT;
         if (version >= 19) {
             return checkOp(context, 24); //OP_SYSTEM_ALERT_WINDOW = 24;
@@ -31,9 +39,26 @@ public class HuaweiUtils {
     }
 
     /**
+     * 获取 emui 版本号
+     *
+     * @return
+     */
+    public static double getEmuiVersion() {
+        try {
+            String emuiVersion = getSystemProperty("ro.build.version.emui");
+            String version = emuiVersion.substring(emuiVersion.indexOf("_") + 1);
+            return Double.parseDouble(version);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 4.0;
+    }
+
+    /**
      * 去华为权限申请页面
      */
-    public static void applyPermission(Context context) {
+    @Override
+    public void applyPermission(Context context) {
         try {
             Intent intent = new Intent();
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -42,7 +67,7 @@ public class HuaweiUtils {
 //      "com.huawei.permissionmanager.ui.SingleAppActivity");//华为权限管理，跳转到指定app的权限管理位置需要华为接口权限，未解决
             ComponentName comp = new ComponentName("com.huawei.systemmanager", "com.huawei.systemmanager.addviewmonitor.AddViewMonitorActivity");//悬浮窗管理页面
             intent.setComponent(comp);
-            if (RomUtils.getEmuiVersion() == 3.1) {
+            if (getEmuiVersion() == 3.1) {
                 //emui 3.1 的适配
                 context.startActivity(intent);
             } else {
@@ -82,7 +107,7 @@ public class HuaweiUtils {
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    private static boolean checkOp(Context context, int op) {
+    private boolean checkOp(Context context, int op) {
         final int version = Build.VERSION.SDK_INT;
         if (version >= 19) {
             AppOpsManager manager = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);

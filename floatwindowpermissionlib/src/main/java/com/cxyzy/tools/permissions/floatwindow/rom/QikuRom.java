@@ -14,13 +14,22 @@ import android.util.Log;
 
 import java.lang.reflect.Method;
 
-public class QikuUtils {
-    private static final String TAG = "QikuUtils";
+public class QikuRom implements RomInterface {
+    private static final String TAG = "QikuRom";
+
+    @Override
+    public boolean checkRom() {
+        //fix issue https://github.com/zhaozepeng/FloatWindowPermission/issues/9
+        return Build.MANUFACTURER.contains("QiKU")
+                || Build.MANUFACTURER.contains("360");
+    }
+
 
     /**
      * 检测 360 悬浮窗权限
      */
-    public static boolean checkFloatWindowPermission(Context context) {
+    @Override
+    public boolean checkFloatWindowPermission(Context context) {
         final int version = Build.VERSION.SDK_INT;
         if (version >= 19) {
             return checkOp(context, 24); //OP_SYSTEM_ALERT_WINDOW = 24;
@@ -36,7 +45,7 @@ public class QikuUtils {
             try {
                 Class clazz = AppOpsManager.class;
                 Method method = clazz.getDeclaredMethod("checkOp", int.class, int.class, String.class);
-                return AppOpsManager.MODE_ALLOWED == (int)method.invoke(manager, op, Binder.getCallingUid(), context.getPackageName());
+                return AppOpsManager.MODE_ALLOWED == (int) method.invoke(manager, op, Binder.getCallingUid(), context.getPackageName());
             } catch (Exception e) {
                 Log.e(TAG, Log.getStackTraceString(e));
             }
@@ -49,7 +58,8 @@ public class QikuUtils {
     /**
      * 去360权限申请页面
      */
-    public static void applyPermission(Context context) {
+    @Override
+    public void applyPermission(Context context) {
         Intent intent = new Intent();
         intent.setClassName("com.android.settings", "com.android.settings.Settings$OverlaySettingsActivity");
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -65,6 +75,7 @@ public class QikuUtils {
             }
         }
     }
+
 
     private static boolean isIntentAvailable(Intent intent, Context context) {
         if (intent == null) {

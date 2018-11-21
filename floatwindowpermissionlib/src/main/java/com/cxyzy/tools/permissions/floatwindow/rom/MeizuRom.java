@@ -9,19 +9,35 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Build;
+import android.text.TextUtils;
 import android.util.Log;
-
-import com.cxyzy.tools.permissions.floatwindow.FloatWinPermissionUtil;
 
 import java.lang.reflect.Method;
 
-public class MeizuUtils {
-    private static final String TAG = "MeizuUtils";
+import static com.cxyzy.tools.permissions.floatwindow.rom.CommonRom.commonROMPermissionApplyInternal;
+import static com.cxyzy.tools.permissions.floatwindow.rom.CommonRom.getSystemProperty;
+
+public class MeizuRom implements RomInterface {
+    private static final String TAG = "MeizuRom";
+
+    @Override
+    public boolean checkRom() {
+        //return Build.MANUFACTURER.contains("Meizu");
+        String meizuFlymeOSFlag = getSystemProperty("ro.build.display.id");
+        if (TextUtils.isEmpty(meizuFlymeOSFlag)) {
+            return false;
+        } else if (meizuFlymeOSFlag.contains("flyme") || meizuFlymeOSFlag.toLowerCase().contains("flyme")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * 检测 meizu 悬浮窗权限
      */
-    public static boolean checkFloatWindowPermission(Context context) {
+    @Override
+    public boolean checkFloatWindowPermission(Context context) {
         final int version = Build.VERSION.SDK_INT;
         if (version >= 19) {
             return checkOp(context, 24); //OP_SYSTEM_ALERT_WINDOW = 24;
@@ -32,7 +48,8 @@ public class MeizuUtils {
     /**
      * 去魅族权限申请页面
      */
-    public static void applyPermission(Context context) {
+    @Override
+    public void applyPermission(Context context) {
         try {
             Intent intent = new Intent("com.meizu.safe.security.SHOW_APPSEC");
 //            intent.setClassName("com.meizu.safe", "com.meizu.safe.security.AppSecActivity");//remove this line code for fix flyme6.3
@@ -43,7 +60,7 @@ public class MeizuUtils {
             try {
                 Log.e(TAG, "获取悬浮窗权限, 打开AppSecActivity失败, " + Log.getStackTraceString(e));
                 // 最新的魅族flyme 6.2.5 用上述方法获取权限失败, 不过又可以用下述方法获取权限了
-                FloatWinPermissionUtil.commonROMPermissionApplyInternal(context);
+                commonROMPermissionApplyInternal(context);
             } catch (Exception eFinal) {
                 Log.e(TAG, "获取悬浮窗权限失败, 通用获取方法失败, " + Log.getStackTraceString(eFinal));
             }

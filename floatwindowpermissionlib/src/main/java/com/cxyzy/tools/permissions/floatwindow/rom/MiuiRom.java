@@ -12,12 +12,23 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.lang.reflect.Method;
 
-public class MiuiUtils {
-    private static final String TAG = "MiuiUtils";
+import static com.cxyzy.tools.permissions.floatwindow.rom.CommonRom.getSystemProperty;
+
+public class MiuiRom implements RomInterface {
+    private static final String TAG = "MiuiRom";
+
+    /**
+     * check if is miui ROM
+     */
+    @Override
+    public boolean checkRom() {
+        return !TextUtils.isEmpty(getSystemProperty("ro.miui.ui.version.name"));
+    }
 
     /**
      * 获取小米 rom 版本号，获取失败返回 -1
@@ -25,7 +36,7 @@ public class MiuiUtils {
      * @return miui rom version code, if fail , return -1
      */
     public static int getMiuiVersion() {
-        String version = RomUtils.getSystemProperty("ro.miui.ui.version.name");
+        String version = getSystemProperty("ro.miui.ui.version.name");
         if (version != null) {
             try {
                 return Integer.parseInt(version.substring(1));
@@ -40,7 +51,8 @@ public class MiuiUtils {
     /**
      * 检测 miui 悬浮窗权限
      */
-    public static boolean checkFloatWindowPermission(Context context) {
+    @Override
+    public boolean checkFloatWindowPermission(Context context) {
         final int version = Build.VERSION.SDK_INT;
 
         if (version >= 19) {
@@ -76,7 +88,8 @@ public class MiuiUtils {
     /**
      * 小米 ROM 权限申请
      */
-    public static void applyPermission(Context context) {
+    @Override
+    public void applyPermission(Context context) {
         int versionCode = getMiuiVersion();
         if (versionCode == 5) {
             goToMiuiPermissionActivity_V5(context);
