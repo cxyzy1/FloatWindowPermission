@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2016 Facishare Technology Co., Ltd. All Rights Reserved.
  */
-package com.android.permission.rom;
+package com.cxyzy.tools.permissions.floatwindow.rom;
 
 import android.os.Build;
 import android.text.TextUtils;

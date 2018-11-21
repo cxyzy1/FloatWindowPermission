@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2016 Facishare Technology Co., Ltd. All Rights Reserved.
  */
-package com.android.permission.rom;
+package com.cxyzy.tools.permissions.floatwindow.rom;
 
 import android.annotation.TargetApi;
 import android.app.AppOpsManager;
@@ -11,7 +11,7 @@ import android.os.Binder;
 import android.os.Build;
 import android.util.Log;
 
-import com.android.permission.FloatWindowManager;
+import com.cxyzy.tools.permissions.floatwindow.BaseFloatWindowManager;
 
 import java.lang.reflect.Method;
 
@@ -39,11 +39,11 @@ public class MeizuUtils {
             intent.putExtra("packageName", context.getPackageName());
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
-        }catch (Exception e) {
+        } catch (Exception e) {
             try {
                 Log.e(TAG, "获取悬浮窗权限, 打开AppSecActivity失败, " + Log.getStackTraceString(e));
                 // 最新的魅族flyme 6.2.5 用上述方法获取权限失败, 不过又可以用下述方法获取权限了
-                FloatWindowManager.commonROMPermissionApplyInternal(context);
+                BaseFloatWindowManager.commonROMPermissionApplyInternal(context);
             } catch (Exception eFinal) {
                 Log.e(TAG, "获取悬浮窗权限失败, 通用获取方法失败, " + Log.getStackTraceString(eFinal));
             }

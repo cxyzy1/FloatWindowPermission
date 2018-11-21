@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2016 Facishare Technology Co., Ltd. All Rights Reserved.
  */
-package com.android.permission;
+package com.android.floatwindowpermission;
 
 import android.content.Context;
 import android.graphics.Point;
@@ -15,8 +15,6 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.Toast;
-
-import com.android.floatwindowpermission.R;
 
 /**
  * Description:
@@ -167,7 +165,7 @@ public class AVCallFloatView extends FrameLayout {
         this.post(new AnchorAnimRunnable(Math.abs(animTime), xDistance, yDistance, System.currentTimeMillis()));
     }
 
-    public int dp2px(float dp){
+    public int dp2px(float dp) {
         final float scale = getContext().getResources().getDisplayMetrics().density;
         return (int) (dp * scale + 0.5f);
     }

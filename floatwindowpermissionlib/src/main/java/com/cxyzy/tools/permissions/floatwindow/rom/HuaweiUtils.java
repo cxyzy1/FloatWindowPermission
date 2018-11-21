@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2016 Facishare Technology Co., Ltd. All Rights Reserved.
  */
-package com.android.permission.rom;
+package com.cxyzy.tools.permissions.floatwindow.rom;
 
 import android.annotation.TargetApi;
 import android.app.AppOpsManager;
@@ -9,14 +9,11 @@ import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
-import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 public class HuaweiUtils {

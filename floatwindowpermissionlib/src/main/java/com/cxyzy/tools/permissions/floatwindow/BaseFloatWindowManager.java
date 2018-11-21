@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2016 Facishare Technology Co., Ltd. All Rights Reserved.
  */
-package com.android.permission;
+package com.cxyzy.tools.permissions.floatwindow;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -17,12 +17,12 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.WindowManager;
 
-import com.android.permission.rom.HuaweiUtils;
-import com.android.permission.rom.MeizuUtils;
-import com.android.permission.rom.MiuiUtils;
-import com.android.permission.rom.OppoUtils;
-import com.android.permission.rom.QikuUtils;
-import com.android.permission.rom.RomUtils;
+import com.cxyzy.tools.permissions.floatwindow.rom.HuaweiUtils;
+import com.cxyzy.tools.permissions.floatwindow.rom.MeizuUtils;
+import com.cxyzy.tools.permissions.floatwindow.rom.MiuiUtils;
+import com.cxyzy.tools.permissions.floatwindow.rom.OppoUtils;
+import com.cxyzy.tools.permissions.floatwindow.rom.QikuUtils;
+import com.cxyzy.tools.permissions.floatwindow.rom.RomUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -34,27 +34,13 @@ import java.lang.reflect.Method;
  * @since 2016-10-17
  */
 
-public class FloatWindowManager {
-    private static final String TAG = "FloatWindowManager";
-
-    private static volatile FloatWindowManager instance;
+public abstract class BaseFloatWindowManager {
+    private static final String TAG = "BaseFloatWindowManager";
 
     private boolean isWindowDismiss = true;
-    private WindowManager windowManager = null;
-    private WindowManager.LayoutParams mParams = null;
-    private AVCallFloatView floatView = null;
-    private Dialog dialog;
-
-    public static FloatWindowManager getInstance() {
-        if (instance == null) {
-            synchronized (FloatWindowManager.class) {
-                if (instance == null) {
-                    instance = new FloatWindowManager();
-                }
-            }
-        }
-        return instance;
-    }
+    protected WindowManager windowManager = null;
+    protected WindowManager.LayoutParams mParams = null;
+    protected Dialog dialog;
 
     public void applyOrShowFloatWindow(Context context) {
         if (checkPermission(context)) {
@@ -310,15 +296,11 @@ public class FloatWindowManager {
         mParams.gravity = Gravity.LEFT | Gravity.TOP;
         mParams.x = screenWidth - dp2px(context, 100);
         mParams.y = screenHeight - dp2px(context, 171);
+        showFloatView(context);
 
-
-//        ImageView imageView = new ImageView(mContext);
-//        imageView.setImageResource(R.drawable.app_icon);
-        floatView = new AVCallFloatView(context);
-        floatView.setParams(mParams);
-        floatView.setIsShowing(true);
-        windowManager.addView(floatView, mParams);
     }
+
+    protected abstract void showFloatView(Context context);
 
     public void dismissWindow() {
         if (isWindowDismiss) {
@@ -327,13 +309,9 @@ public class FloatWindowManager {
         }
 
         isWindowDismiss = true;
-        floatView.setIsShowing(false);
-        if (windowManager != null && floatView != null) {
-            windowManager.removeViewImmediate(floatView);
-        }
     }
 
-    private int dp2px(Context context, float dp){
+    private int dp2px(Context context, float dp) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dp * scale + 0.5f);
     }
