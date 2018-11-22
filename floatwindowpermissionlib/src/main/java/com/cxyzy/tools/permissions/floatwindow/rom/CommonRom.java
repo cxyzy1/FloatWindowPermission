@@ -14,7 +14,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 
 /**
  * Description:
@@ -58,13 +57,7 @@ public class CommonRom implements RomInterface {
     public boolean checkFloatWindowPermission(Context context) {
         Boolean result = true;
         if (Build.VERSION.SDK_INT >= 23) {
-            try {
-                Class clazz = Settings.class;
-                Method canDrawOverlays = clazz.getDeclaredMethod("canDrawOverlays", Context.class);
-                result = (Boolean) canDrawOverlays.invoke(null, context);
-            } catch (Exception e) {
-                Log.e(TAG, Log.getStackTraceString(e));
-            }
+            result = Settings.canDrawOverlays(context);
         }
         return result;
     }
