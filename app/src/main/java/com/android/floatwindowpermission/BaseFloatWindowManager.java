@@ -3,10 +3,8 @@
  */
 package com.android.floatwindowpermission;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.os.Build;
@@ -39,35 +37,35 @@ public abstract class BaseFloatWindowManager {
         }
     }
 
-    private void showConfirmDialog(Context context, OnConfirmResult result) {
-        showConfirmDialog(context, "您的手机没有授予悬浮窗权限，请开启后再试", result);
-    }
-
-    private void showConfirmDialog(Context context, String message, final OnConfirmResult result) {
-        if (dialog != null && dialog.isShowing()) {
-            dialog.dismiss();
-        }
-
-        dialog = new AlertDialog.Builder(context).setCancelable(true).setTitle("")
-                .setMessage(message)
-                .setPositiveButton("现在去开启",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                result.confirmResult(true);
-                                dialog.dismiss();
-                            }
-                        }).setNegativeButton("暂不开启",
-                        new DialogInterface.OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                result.confirmResult(false);
-                                dialog.dismiss();
-                            }
-                        }).create();
-        dialog.show();
-    }
+//    private void showConfirmDialog(Context context, OnConfirmResult result) {
+//        showConfirmDialog(context, "您的手机没有授予悬浮窗权限，请开启后再试", result);
+//    }
+//
+//    private void showConfirmDialog(Context context, String message, final OnConfirmResult result) {
+//        if (dialog != null && dialog.isShowing()) {
+//            dialog.dismiss();
+//        }
+//
+//        dialog = new AlertDialog.Builder(context).setCancelable(true).setTitle("")
+//                .setMessage(message)
+//                .setPositiveButton("现在去开启",
+//                        new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                result.confirmResult(true);
+//                                dialog.dismiss();
+//                            }
+//                        }).setNegativeButton("暂不开启",
+//                        new DialogInterface.OnClickListener() {
+//
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                result.confirmResult(false);
+//                                dialog.dismiss();
+//                            }
+//                        }).create();
+//        dialog.show();
+//    }
 
     private interface OnConfirmResult {
         void confirmResult(boolean confirm);
