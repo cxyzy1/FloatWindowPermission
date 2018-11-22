@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion COMPILE_SDK_VERSION.toInteger()
     defaultConfig {
-        applicationId "com.android.floatwindowpermission"
+        applicationId "com.cxyzy.floatwindowpermission"
         minSdkVersion MIN_SDK_VERSION.toInteger()
         targetSdkVersion TARGET_SDK_VERSION.toInteger()
         versionCode 1

@@ -9,13 +9,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.util.Log;
 
-/**
- * Description:
- *
- * @author zhaozp
- * @since 2016-10-17
- */
-
 public class FloatWinPermissionUtil {
     private static final String TAG = "FloatWinPermissionUtil";
 

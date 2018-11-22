@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2016 Facishare Technology Co., Ltd. All Rights Reserved.
  */
-package com.android.floatwindowpermission;
+package com.cxyzy.floatwindowpermission;
 
 import android.app.Dialog;
 import android.content.Context;

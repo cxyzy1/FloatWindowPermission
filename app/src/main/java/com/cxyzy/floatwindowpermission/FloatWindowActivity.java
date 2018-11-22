@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2016 Facishare Technology Co., Ltd. All Rights Reserved.
  */
-package com.android.floatwindowpermission;
+package com.cxyzy.floatwindowpermission;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -20,15 +20,15 @@ public class FloatWindowActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_main);
-        findViewById(R.id.btn_show_or_apply).setOnClickListener(new View.OnClickListener() {
+        setContentView(com.cxyzy.floatwindowpermission.R.layout.activity_main);
+        findViewById(com.cxyzy.floatwindowpermission.R.id.btn_show_or_apply).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FloatWindowManager.getInstance().applyOrShowFloatWindow(FloatWindowActivity.this);
             }
         });
 
-        findViewById(R.id.btn_dismiss).setOnClickListener(new View.OnClickListener() {
+        findViewById(com.cxyzy.floatwindowpermission.R.id.btn_dismiss).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FloatWindowManager.getInstance().dismissWindow();

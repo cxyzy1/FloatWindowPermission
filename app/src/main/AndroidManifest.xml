@@ -1,6 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.android.floatwindowpermission">
-
+    package="com.cxyzy.floatwindowpermission">
 
     <application
         android:allowBackup="false"
@@ -10,7 +9,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".FloatWindowActivity"
+            android:name="com.cxyzy.floatwindowpermission.FloatWindowActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

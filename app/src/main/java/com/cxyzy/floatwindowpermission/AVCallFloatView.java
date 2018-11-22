@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2016 Facishare Technology Co., Ltd. All Rights Reserved.
  */
-package com.android.floatwindowpermission;
+package com.cxyzy.floatwindowpermission;
 
 import android.content.Context;
 import android.graphics.Point;
@@ -68,7 +68,7 @@ public class AVCallFloatView extends FrameLayout {
     private void initView() {
         windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
         LayoutInflater inflater = LayoutInflater.from(getContext());
-        View floatView = inflater.inflate(R.layout.float_window_layout, null);
+        View floatView = inflater.inflate(com.cxyzy.floatwindowpermission.R.layout.float_window_layout, null);
 
         addView(floatView);
 
