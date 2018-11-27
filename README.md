@@ -14,7 +14,7 @@ Add it in your root build.gradle at the end of repositories:
 - Step 2. Add the dependency
 
 	dependencies {
-	        implementation 'com.github.cxyzy1:FloatWindowPermission:1.0.0'
+	        implementation 'com.github.cxyzy1:FloatWindowPermission:1.0.1'
 	}
 - Step 3. just call the following function to apply for float window permission.
 `FloatWinPermissionUtil.applyOrShowFloatWindow`
