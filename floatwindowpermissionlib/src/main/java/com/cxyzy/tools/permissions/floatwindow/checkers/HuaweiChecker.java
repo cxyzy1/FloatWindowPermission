@@ -1,7 +1,4 @@
-/*
- * Copyright (C) 2016 Facishare Technology Co., Ltd. All Rights Reserved.
- */
-package com.cxyzy.tools.permissions.floatwindow.rom;
+package com.cxyzy.tools.permissions.floatwindow.checkers;
 
 import android.annotation.TargetApi;
 import android.app.AppOpsManager;
@@ -11,31 +8,61 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Build;
+import android.os.Handler;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.cxyzy.tools.permissions.floatwindow.FloatWinPermissionUtil;
+
 import java.lang.reflect.Method;
 
-import static com.cxyzy.tools.permissions.floatwindow.rom.CommonRom.getSystemProperty;
+import static com.cxyzy.tools.permissions.floatwindow.checkers.CommonChecker.commonROMPermissionApplyInternal;
+import static com.cxyzy.tools.permissions.floatwindow.checkers.CommonChecker.getSystemProperty;
 
-public class HuaweiRom implements RomInterface {
-    private static final String TAG = "HuaweiRom";
+/**
+ * 华为rom悬浮窗权限检测类
+ */
+public class HuaweiChecker extends BaseChecker {
+    private static final String TAG = "HuaweiChecker";
+    private boolean shouldImmediateCheck = true;//是否应该立即执行检测
 
     @Override
-    public boolean checkRom() {
+    public boolean shouldCheckByMe() {
+        return isThisRom();
+    }
+
+    private boolean isThisRom() {
         return Build.MANUFACTURER.contains("HUAWEI");
     }
 
     /**
-     * 检测 Huawei 悬浮窗权限
+     * 检测 Huawei 悬浮窗权限,如果没有，则弹出悬浮窗申请界面。
+     * 2018.11.27 测试过程中，发现华为P10 Plus(Android 8.0.0)存在bug。如果获得悬浮窗权限后，立即返回对应界面，会出现再次检测仍然没有权限,所以增加了延时处理。
      */
     @Override
-    public boolean checkFloatWindowPermission(Context context) {
-        final int version = Build.VERSION.SDK_INT;
-        if (version >= 19) {
-            return checkOp(context, 24); //OP_SYSTEM_ALERT_WINDOW = 24;
+    public void checkFloatWindowPermission(Context context, FloatWinPermissionUtil.CheckAndApplyPermissionCallback callback) {
+        final long DELAY_CHECK_TIME = 1000;
+        //如果不是第一次检测，都需要等待DELAY_CHECK_TIME后执行。原因见方法注释。
+        if (shouldImmediateCheck) {
+            shouldImmediateCheck = false;
+            checkFloatWindowPermissionInternal(context, callback);
+        } else {
+            new Handler().postDelayed(() -> checkFloatWindowPermissionInternal(context, callback), DELAY_CHECK_TIME);
         }
-        return true;
+    }
+
+    private void checkFloatWindowPermissionInternal(Context context, FloatWinPermissionUtil.CheckAndApplyPermissionCallback callback) {
+        boolean isPermitted = true;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            isPermitted = Settings.canDrawOverlays(context);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            isPermitted = checkOp(context, Build.VERSION_CODES.N);
+        }
+        if (isPermitted) {
+            shouldImmediateCheck = true;
+        }
+        checkFloatWindowPermission(isPermitted, callback);
     }
 
     /**
@@ -62,12 +89,11 @@ public class HuaweiRom implements RomInterface {
         try {
             Intent intent = new Intent();
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//   ComponentName comp = new ComponentName("com.huawei.systemmanager","com.huawei.permissionmanager.ui.MainActivity");//华为权限管理
-//   ComponentName comp = new ComponentName("com.huawei.systemmanager",
-//      "com.huawei.permissionmanager.ui.SingleAppActivity");//华为权限管理，跳转到指定app的权限管理位置需要华为接口权限，未解决
             ComponentName comp = new ComponentName("com.huawei.systemmanager", "com.huawei.systemmanager.addviewmonitor.AddViewMonitorActivity");//悬浮窗管理页面
             intent.setComponent(comp);
-            if (getEmuiVersion() == 3.1) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                commonROMPermissionApplyInternal(context);
+            } else if (getEmuiVersion() == 3.1) {
                 //emui 3.1 的适配
                 context.startActivity(intent);
             } else {
@@ -79,10 +105,8 @@ public class HuaweiRom implements RomInterface {
         } catch (SecurityException e) {
             Intent intent = new Intent();
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//   ComponentName comp = new ComponentName("com.huawei.systemmanager","com.huawei.permissionmanager.ui.MainActivity");//华为权限管理
             ComponentName comp = new ComponentName("com.huawei.systemmanager",
                     "com.huawei.permissionmanager.ui.MainActivity");//华为权限管理，跳转到本app的权限管理页面,这个需要华为接口权限，未解决
-//      ComponentName comp = new ComponentName("com.huawei.systemmanager","com.huawei.systemmanager.addviewmonitor.AddViewMonitorActivity");//悬浮窗管理页面
             intent.setComponent(comp);
             context.startActivity(intent);
             Log.e(TAG, Log.getStackTraceString(e));
@@ -90,17 +114,14 @@ public class HuaweiRom implements RomInterface {
             /**
              * 手机管家版本较低 HUAWEI SC-UL10
              */
-//   Toast.makeText(MainActivity.this, "act找不到", Toast.LENGTH_LONG).show();
             Intent intent = new Intent();
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             ComponentName comp = new ComponentName("com.Android.settings", "com.android.settings.permission.TabItem");//权限管理页面 android4.4
-//   ComponentName comp = new ComponentName("com.android.settings","com.android.settings.permission.single_app_activity");//此处可跳转到指定app对应的权限管理页面，但是需要相关权限，未解决
             intent.setComponent(comp);
             context.startActivity(intent);
             e.printStackTrace();
             Log.e(TAG, Log.getStackTraceString(e));
         } catch (Exception e) {
-            //抛出异常时提示信息
             Toast.makeText(context, "进入设置页面失败，请手动设置", Toast.LENGTH_LONG).show();
             Log.e(TAG, Log.getStackTraceString(e));
         }
@@ -109,7 +130,7 @@ public class HuaweiRom implements RomInterface {
     @TargetApi(Build.VERSION_CODES.KITKAT)
     private boolean checkOp(Context context, int op) {
         final int version = Build.VERSION.SDK_INT;
-        if (version >= 19) {
+        if (version >= Build.VERSION_CODES.KITKAT) {
             AppOpsManager manager = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
             try {
                 Class clazz = AppOpsManager.class;
@@ -119,7 +140,7 @@ public class HuaweiRom implements RomInterface {
                 Log.e(TAG, Log.getStackTraceString(e));
             }
         } else {
-            Log.e(TAG, "Below API 19 cannot invoke!");
+            Log.e(TAG, "Below API " + Build.VERSION_CODES.KITKAT + " cannot invoke!");
         }
         return false;
     }

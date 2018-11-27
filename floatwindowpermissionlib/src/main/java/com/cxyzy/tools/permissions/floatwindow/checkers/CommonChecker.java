@@ -1,7 +1,4 @@
-/*
- * Copyright (C) 2016 Facishare Technology Co., Ltd. All Rights Reserved.
- */
-package com.cxyzy.tools.permissions.floatwindow.rom;
+package com.cxyzy.tools.permissions.floatwindow.checkers;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,19 +7,18 @@ import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
 
+import com.cxyzy.tools.permissions.floatwindow.FloatWinPermissionUtil;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 
 /**
- * Description:
- *
- * @author zhaozp
- * @since 2016-05-23
+ * 通用rom悬浮窗权限检测类
  */
-public class CommonRom implements RomInterface {
-    private static final String TAG = "CommonRom";
+public class CommonChecker extends BaseChecker {
+    private static final String TAG = "CommonChecker";
 
 
     public static String getSystemProperty(String propName) {
@@ -49,17 +45,17 @@ public class CommonRom implements RomInterface {
     }
 
     @Override
-    public boolean checkRom() {
+    public boolean shouldCheckByMe() {
         return true;
     }
 
     @Override
-    public boolean checkFloatWindowPermission(Context context) {
-        Boolean result = true;
-        if (Build.VERSION.SDK_INT >= 23) {
-            result = Settings.canDrawOverlays(context);
+    public void checkFloatWindowPermission(Context context, FloatWinPermissionUtil.CheckAndApplyPermissionCallback callback) {
+        boolean isPermitted = true;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            isPermitted = Settings.canDrawOverlays(context);
         }
-        return result;
+        checkFloatWindowPermission(isPermitted, callback);
     }
 
     /**

@@ -1,6 +1,3 @@
-/*
- * Copyright (C) 2016 Facishare Technology Co., Ltd. All Rights Reserved.
- */
 package com.cxyzy.floatwindowpermission;
 
 import android.app.Dialog;
@@ -14,13 +11,6 @@ import android.view.WindowManager;
 
 import com.cxyzy.tools.permissions.floatwindow.FloatWinPermissionUtil;
 
-/**
- * Description:
- *
- * @author zhaozp
- * @since 2016-10-17
- */
-
 public abstract class BaseFloatWindowManager {
     private static final String TAG = "BaseFloatWindowManager";
 
@@ -29,49 +19,11 @@ public abstract class BaseFloatWindowManager {
     protected WindowManager.LayoutParams mParams = null;
     protected Dialog dialog;
 
-    public void applyOrShowFloatWindow(Context context) {
-        if (FloatWinPermissionUtil.checkPermission(context)) {
-            showWindow(context);
-        } else {
-            FloatWinPermissionUtil.applyPermission(context);
-        }
+    public void applyOrShowFloatWindow(final Context context) {
+        FloatWinPermissionUtil.applyOrShowFloatWindow(context, () -> showFloatWindow(context));
     }
 
-//    private void showConfirmDialog(Context context, OnConfirmResult result) {
-//        showConfirmDialog(context, "您的手机没有授予悬浮窗权限，请开启后再试", result);
-//    }
-//
-//    private void showConfirmDialog(Context context, String message, final OnConfirmResult result) {
-//        if (dialog != null && dialog.isShowing()) {
-//            dialog.dismiss();
-//        }
-//
-//        dialog = new AlertDialog.Builder(context).setCancelable(true).setTitle("")
-//                .setMessage(message)
-//                .setPositiveButton("现在去开启",
-//                        new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                result.confirmResult(true);
-//                                dialog.dismiss();
-//                            }
-//                        }).setNegativeButton("暂不开启",
-//                        new DialogInterface.OnClickListener() {
-//
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                result.confirmResult(false);
-//                                dialog.dismiss();
-//                            }
-//                        }).create();
-//        dialog.show();
-//    }
-
-    private interface OnConfirmResult {
-        void confirmResult(boolean confirm);
-    }
-
-    private void showWindow(Context context) {
+    private void showFloatWindow(Context context) {
         if (!isWindowDismiss) {
             Log.e(TAG, "view is already added here");
             return;

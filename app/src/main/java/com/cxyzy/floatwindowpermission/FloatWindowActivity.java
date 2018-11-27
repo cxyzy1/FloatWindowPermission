@@ -36,4 +36,10 @@ public class FloatWindowActivity extends Activity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FloatWindowManager.getInstance().applyOrShowFloatWindow(FloatWindowActivity.this);
+    }
+
 }

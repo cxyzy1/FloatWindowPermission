@@ -13,8 +13,6 @@ import android.content.Context;
  */
 
 public class FloatWindowManager extends BaseFloatWindowManager {
-    private static final String TAG = FloatWindowManager.class.getSimpleName();
-
     private static volatile FloatWindowManager instance;
 
     private AVCallFloatView floatView = null;
@@ -41,9 +39,12 @@ public class FloatWindowManager extends BaseFloatWindowManager {
     @Override
     public void dismissWindow() {
         super.dismissWindow();
-        floatView.setIsShowing(false);
-        if (windowManager != null && floatView != null) {
-            windowManager.removeViewImmediate(floatView);
+        if (floatView != null) {
+            floatView.setIsShowing(false);
+            if (windowManager != null && floatView != null) {
+                windowManager.removeViewImmediate(floatView);
+            }
+            floatView = null;
         }
     }
 

@@ -1,4 +1,4 @@
-package com.cxyzy.tools.permissions.floatwindow.rom;
+package com.cxyzy.tools.permissions.floatwindow.checkers;
 
 import android.annotation.TargetApi;
 import android.app.AppOpsManager;
@@ -9,6 +9,8 @@ import android.os.Binder;
 import android.os.Build;
 import android.util.Log;
 
+import com.cxyzy.tools.permissions.floatwindow.FloatWinPermissionUtil;
+
 import java.lang.reflect.Method;
 
 /**
@@ -17,13 +19,21 @@ import java.lang.reflect.Method;
  * @author Shawn_Dut
  * @since 2018-02-01
  */
-public class OppoRom implements RomInterface {
 
-    private static final String TAG = "OppoRom";
+/**
+ * oppo rom悬浮窗权限检测类(适用于API 23以下)
+ */
+public class OppoChecker extends BaseChecker {
+
+    private static final String TAG = "OppoChecker";
 
     @Override
-    public boolean checkRom() {
+    public boolean shouldCheckByMe() {
         //https://github.com/zhaozepeng/FloatWindowPermission/pull/26
+        return isThisRom() && Build.VERSION.SDK_INT < Build.VERSION_CODES.M;
+    }
+
+    private boolean isThisRom() {
         return Build.MANUFACTURER.contains("OPPO") || Build.MANUFACTURER.contains("oppo");
     }
 
@@ -31,18 +41,18 @@ public class OppoRom implements RomInterface {
      * 检测 oppo 悬浮窗权限
      */
     @Override
-    public boolean checkFloatWindowPermission(Context context) {
-        final int version = Build.VERSION.SDK_INT;
-        if (version >= 19) {
-            return checkOp(context, 24); //OP_SYSTEM_ALERT_WINDOW = 24;
+    public void checkFloatWindowPermission(Context context, FloatWinPermissionUtil.CheckAndApplyPermissionCallback callback) {
+        boolean isPermitted = true;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            isPermitted = checkOp(context, Build.VERSION_CODES.N);
         }
-        return true;
+        checkFloatWindowPermission(isPermitted, callback);
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     private static boolean checkOp(Context context, int op) {
         final int version = Build.VERSION.SDK_INT;
-        if (version >= 19) {
+        if (version >= Build.VERSION_CODES.KITKAT) {
             AppOpsManager manager = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
             try {
                 Class clazz = AppOpsManager.class;
@@ -52,7 +62,7 @@ public class OppoRom implements RomInterface {
                 Log.e(TAG, Log.getStackTraceString(e));
             }
         } else {
-            Log.e(TAG, "Below API 19 cannot invoke!");
+            Log.e(TAG, "Below API " + Build.VERSION_CODES.KITKAT + " cannot invoke!");
         }
         return false;
     }

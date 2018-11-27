@@ -1,63 +1,83 @@
-/*
- * Copyright (C) 2016 Facishare Technology Co., Ltd. All Rights Reserved.
- */
 package com.cxyzy.tools.permissions.floatwindow;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 public class FloatWinPermissionUtil {
     private static final String TAG = "FloatWinPermissionUtil";
 
-    public static boolean checkPermission(Context context) {
-        return RomManager.checkFloatWindowPermission(context);
+    /**
+     * 检查是否有悬浮窗权限，如果没有，则弹出悬浮窗申请界面。
+     */
+    public static void applyOrShowFloatWindow(@NonNull final Context context, @NonNull final CheckPermissionCallback callback) {
+        CheckAndApplyPermissionCallback checkAndApplyPermissionCallback = new CheckAndApplyPermissionCallback() {
+            @Override
+            public void onNotPermitted() {
+                applyPermission(context);
+            }
+
+            @Override
+            public void onPermitted() {
+                callback.onPermitted();
+            }
+        };
+
+        CheckerManager.checkFloatWindowPermission(context, checkAndApplyPermissionCallback);
     }
 
     public static void applyPermission(final Context context) {
-        showConfirmDialog(context, new OnConfirmResult() {
-            @Override
-            public void confirmResult(boolean confirm) {
-                if (confirm) {
-                    RomManager.applyPermission(context);
-                } else {
-                    Log.e(TAG, "ROM:360, user manually refuse OVERLAY_PERMISSION");
-                }
+        showConfirmDialog(context, confirmed -> {
+            if (confirmed) {
+                CheckerManager.applyPermission(context);
+            } else {
+                Log.e(TAG, "User manually refuse OVERLAY_PERMISSION");
             }
         });
 
     }
 
     private static void showConfirmDialog(Context context, OnConfirmResult result) {
-        showConfirmDialog(context, "您的手机没有授予悬浮窗权限，请开启后再试", result);
+        showConfirmDialog(context, context.getString(R.string.no_permission_notice), result);
     }
 
     private static void showConfirmDialog(Context context, String message, final OnConfirmResult result) {
         Dialog dialog = new AlertDialog.Builder(context).setCancelable(true).setTitle("")
                 .setMessage(message)
                 .setPositiveButton("现在去开启",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                result.confirmResult(true);
-                                dialog.dismiss();
-                            }
+                        (dialog1, which) -> {
+                            result.confirmResult(true);
+                            dialog1.dismiss();
                         }).setNegativeButton("暂不开启",
-                        new DialogInterface.OnClickListener() {
-
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                result.confirmResult(false);
-                                dialog.dismiss();
-                            }
+                        (dialog12, which) -> {
+                            result.confirmResult(false);
+                            dialog12.dismiss();
                         }).create();
         dialog.show();
     }
 
-    private interface OnConfirmResult {
+    interface OnConfirmResult {
+        /**
+         * 用户是否点击了确认
+         *
+         * @param confirm
+         */
         void confirmResult(boolean confirm);
     }
 
+    public interface CheckPermissionCallback {
+        /**
+         * 在权限已被授予的情况下调用
+         */
+        void onPermitted();
+    }
+
+    public interface CheckAndApplyPermissionCallback extends CheckPermissionCallback {
+        /**
+         * 在权限未被授予时进行调用
+         */
+        void onNotPermitted();
+    }
 }
