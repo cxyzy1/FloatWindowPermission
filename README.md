@@ -1,4 +1,24 @@
 # FloatWindowPermission
+This repository is a fork from "[zhaozepeng/FloatWindowPermission](https://github.com/zhaozepeng/FloatWindowPermission)" . I refactored the code and made it better for using in other projects.
+**Usage**:
+- Step 1. Add the JitPack repository to your build file
+Add it in your root build.gradle at the end of repositories:
+```
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+```
+- Step 2. Add the dependency
+
+	dependencies {
+	        implementation 'com.github.cxyzy1:FloatWindowPermission:1.0.0'
+	}
+- Step 3. just call the following function to apply for float window permission.
+`FloatWinPermissionUtil.applyOrShowFloatWindow`
+---
 this repository is aimed to adapt android float window permission in most of phone models and how to request it at runtime </br>
 
 its result is as follows : </br>

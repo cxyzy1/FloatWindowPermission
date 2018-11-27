@@ -41,7 +41,7 @@ public class FloatWindowManager extends BaseFloatWindowManager {
         super.dismissWindow();
         if (floatView != null) {
             floatView.setIsShowing(false);
-            if (windowManager != null && floatView != null) {
+            if (windowManager != null) {
                 windowManager.removeViewImmediate(floatView);
             }
             floatView = null;

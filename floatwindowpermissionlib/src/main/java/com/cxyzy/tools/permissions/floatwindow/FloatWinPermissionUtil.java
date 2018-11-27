@@ -21,7 +21,9 @@ public class FloatWinPermissionUtil {
 
             @Override
             public void onPermitted() {
-                callback.onPermitted();
+                if (callback != null) {
+                    callback.onPermitted();
+                }
             }
         };
 
