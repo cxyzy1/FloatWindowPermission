@@ -12,7 +12,6 @@ import com.cxyzy.tools.permissions.floatwindow.FloatWinPermissionUtil;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Field;
 
 /**
  * 通用rom悬浮窗权限检测类
@@ -70,18 +69,8 @@ public class CommonChecker extends BaseChecker {
      * 打开系统开启悬浮窗权限界面
      */
     public static void commonROMPermissionApplyInternal(Context context) {
-        try {
-            Class clazz = Settings.class;
-            Field field = clazz.getDeclaredField("ACTION_MANAGE_OVERLAY_PERMISSION");
-
-            Intent intent = new Intent(field.get(null).toString());
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.setData(Uri.parse("package:" + context.getPackageName()));
-            context.startActivity(intent);
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
+        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+        intent.setData(Uri.parse("package:" + context.getPackageName()));
+        context.startActivity(intent);
     }
 }
